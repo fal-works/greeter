@@ -51,7 +51,10 @@ abstract RawArgument(String) to String {
 		if (maybeSwitchar.isNone()) return Maybe.none();
 		final switchar = maybeSwitchar.unwrap();
 
-		return { switchar: switchar, optionString: this.substr(switchar.length) };
+		return Maybe.from({
+			switchar: switchar,
+			optionString: this.substr(switchar.length)
+		});
 	}
 
 	inline extern function new(s: String)
@@ -64,4 +67,7 @@ private enum RawArgumentType {
 	OnlySwitchar(switchar: Switchar);
 }
 
-private typedef RawOption = { switchar: Switchar, optionString: String };
+private typedef RawOption = {
+	final switchar: Switchar;
+	final optionString: String;
+};

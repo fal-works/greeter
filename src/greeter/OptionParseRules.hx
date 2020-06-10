@@ -103,16 +103,16 @@ private typedef OptionParseRuleRecord = {
 	/**
 		Switchar of option to which this rule applies.
 	**/
-	switchar: Switchar,
+	final switchar: Switchar;
 
 	/**
 		Name of option to which this rule applies.
 	**/
-	name: String,
+	final name: String;
 
 	/**
 		List of accepted separator characters for this option.
 		`Colon` is not used if parsing an Unix command line.
 	**/
-	separators: ReadOnlyArray<OptionSeparator>
+	final separators: ReadOnlyArray<OptionSeparator>;
 };
