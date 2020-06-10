@@ -18,23 +18,27 @@ class OptionParseRules {
 		?defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>
 	): OptionParseRules {
 		final nonSeparatedParameterOptions: Array<CommandOption> = [];
-		final ruleRecords: Array<OptionParseRule> = [];
+		final optionRecords: Array<OptionParseRuleRecord> = [];
 
 		for (option => acceptedSeparators in acceptedSeparatorsMap) {
-			ruleRecords.push({ option: option, separators: acceptedSeparators });
+			optionRecords.push({
+				switchar: option.switchar,
+				name: option.name,
+				separators: acceptedSeparators
+			});
 			if (acceptedSeparators.indexOf(None) != -1)
 				nonSeparatedParameterOptions.push(option);
 		}
 
 		final cli = CommandLineInterface.current;
 		return new OptionParseRules(
-			ruleRecords.std(),
+			optionRecords.std(),
 			nonSeparatedParameterOptions.std(),
 			Nulls.coalesce(defaultAcceptedSeparators, cli.defaultAcceptedSeparators)
 		);
 	}
 
-	final records: ReadOnlyArray<OptionParseRule>;
+	final records: ReadOnlyArray<OptionParseRuleRecord>;
 	final nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>;
 	final defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>;
 
@@ -72,8 +76,7 @@ class OptionParseRules {
 	): ReadOnlyArray<OptionSeparator> {
 		var found = this.defaultAcceptedSeparators;
 		for (rule in this.records) {
-			final option = rule.option;
-			if (option.switchar == switchar && option.name == optionName) {
+			if (rule.switchar == switchar && rule.name == optionName) {
 				found = rule.separators;
 				break;
 			}
@@ -82,7 +85,7 @@ class OptionParseRules {
 	}
 
 	function new(
-		records: ReadOnlyArray<OptionParseRule>,
+		records: ReadOnlyArray<OptionParseRuleRecord>,
 		nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>,
 		defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>
 	) {
@@ -91,3 +94,25 @@ class OptionParseRules {
 		this.defaultAcceptedSeparators = defaultAcceptedSeparators;
 	}
 }
+
+/**
+	Data record that represents a rule for parsing a specific option.
+	`switchar` and `name` are used as primary composite key for searching in `OptionParseRules`.
+**/
+private typedef OptionParseRuleRecord = {
+	/**
+		Switchar of option to which this rule applies.
+	**/
+	switchar: Switchar,
+
+	/**
+		Name of option to which this rule applies.
+	**/
+	name: String,
+
+	/**
+		List of accepted separator characters for this option.
+		`Colon` is not used if parsing an Unix command line.
+	**/
+	separators: ReadOnlyArray<OptionSeparator>
+};
