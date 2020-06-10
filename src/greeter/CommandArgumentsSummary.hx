@@ -71,7 +71,7 @@ class CommandArgumentsSummary {
 		var s = 'command parameters: \n';
 		final params = this.commandParameters;
 		if (params.length == 0) s += "  (none)\n";
-		else for (param in params) s += '  $param';
+		else for (param in params) s += '  $param\n';
 
 		s += 'options: \n';
 		for (option => params in this.optionParametersMap) {
