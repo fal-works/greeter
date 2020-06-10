@@ -31,7 +31,7 @@ class OptionParseRules {
 	public static function from(
 		rules: ReadOnlyArray<OptionParseRule>,
 		?defaultOptionSeparators: ReadOnlyArray<OptionSeparator>
-	) {
+	): OptionParseRules {
 		rules = rules.copy();
 		final ruleSet = new Map<String, Bool>();
 		final nspOptionNamesMap = new Map<Switchar, Array<String>>();

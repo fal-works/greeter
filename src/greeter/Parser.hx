@@ -12,7 +12,7 @@ class Parser {
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
 		?cli: CommandLineInterface
-	) {
+	): CommandLine {
 		final arguments = parseArguments(args, optionParseRules, cli);
 		final firstArgument = arguments.shift();
 		if (firstArgument.isNone()) throw 'Passed no arguments.';
@@ -32,14 +32,14 @@ class Parser {
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
 		?cli: CommandLineInterface
-	): Array<CommandArgument> {
+	): CommandArgumentList {
 		final optionParseRules = if (optionParseRules != null) optionParseRules else
 			OptionParseRules.from([]);
 		final cli = if (cli != null) cli else CommandLineInterface.current;
 
 		var index = 0;
 		final length = args.length;
-		final parsed: Array<CommandArgument> = [];
+		final parsed: CommandArgumentList = [];
 
 		inline function hasNext()
 			return index < length;
