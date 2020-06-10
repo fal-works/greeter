@@ -2,7 +2,7 @@ package greeter;
 
 /**
 	Summary of a `CommandArgumentList`.
-	- Stores command parameters and options in separated lists.
+	- Stores command values and options in separated lists.
 	- If there are multiple argument values for an option, they are listed in a single array.
 **/
 @:structInit
@@ -31,65 +31,109 @@ class CommandArgumentSummary {
 			return current;
 		}
 
-		final commandParameters: Array<String> = [];
-		final optionParametersMap = new Map<CommandOption, Array<String>>();
+		final commandValues: Array<String> = [];
+		final optionValuesMap = new CommandOptionValuesMap();
 
 		for (arg in commandArguments) switch arg {
 			case Parameter(value):
-				commandParameters.push(value);
+				commandValues.push(value);
 			case OptionUnit(option):
 				option = getRepresentativeOption(option);
-				if (!optionParametersMap.exists(option))
-					optionParametersMap.set(option, []);
+				if (!optionValuesMap.exists(option))
+					optionValuesMap.set(option, []);
 			case OptionParameter(option, _, value):
 				option = getRepresentativeOption(option);
-				final commandParameters = optionParametersMap.get(option);
-				if (commandParameters != null) commandParameters.push(value);
-				else optionParametersMap.set(option, [value]);
+				final commandValues = optionValuesMap.get(option);
+				if (commandValues != null) commandValues.push(value);
+				else optionValuesMap.set(option, [value]);
 		}
 
 		return {
-			commandParameters: commandParameters,
-			optionParametersMap: optionParametersMap
+			commandValues: commandValues,
+			optionValuesMap: optionValuesMap
 		};
 	}
 
 	/**
-		List of parameters.
+		List of values provided to the command.
 	**/
-	public final commandParameters: Array<String>;
+	public final commandValues: Array<String>;
 
 	/**
 		Mapping from options to their values.
 	**/
-	public final optionParametersMap: Map<CommandOption, Array<String>>;
+	public final optionValuesMap: CommandOptionValuesMap;
+
+	/**
+		Returns the first command value.
+		Throws error if zero or multiple command values were provided to the command.
+	**/
+	public extern inline function getSingleCommandValue(): String {
+		final values = this.commandValues;
+		switch values.length {
+			case 0:
+				throw 'Found no command value.';
+			case 1:
+				return values[0];
+			default:
+				throw 'Too many command values.';
+		}
+	}
 
 	/**
 		Formats `this` and returns as `String`.
 	**/
 	public function toString(): String {
-		var s = 'command parameters: \n';
-		final params = this.commandParameters;
-		if (params.length == 0) s += "  (none)\n";
-		else for (param in params) s += '  $param\n';
+		var s = 'command values: \n';
+		final values = this.commandValues;
+		if (values.length == 0) s += "  (none)\n";
+		else for (value in values) s += '  $value\n';
 
 		s += 'options: \n';
-		for (option => params in this.optionParametersMap) {
-			final paramsStr = switch params.length {
+		for (option => values in this.optionValuesMap) {
+			final valuesStr = switch values.length {
 				case 0: "";
-				case 1: ' ${params[0]}';
-				default: ' ${params.toString()}';
+				case 1: ' ${values[0]}';
+				default: ' ${values.toString()}';
 			}
-			s += '  ${option.toString()}$paramsStr\n';
+			s += '  ${option.toString()}$valuesStr\n';
 		}
 		return s;
 	}
 
 	function new(
-		commandParameters: Array<String>,
-		optionParametersMap: Map<CommandOption, Array<String>>
+		commandValues: Array<String>,
+		optionValuesMap: CommandOptionValuesMap
 	) {
-		this.commandParameters = commandParameters;
-		this.optionParametersMap = optionParametersMap;
+		this.commandValues = commandValues;
+		this.optionValuesMap = optionValuesMap;
+	}
+}
+
+/**
+	Mapping from each option to a list of values provided for the option.
+**/
+@:forward
+abstract CommandOptionValuesMap(Map<CommandOption, Array<String>>) to Map<CommandOption, Array<String>> {
+	public extern inline function new()
+		this = new Map();
+
+	/**
+		Returns the first value for `option`.
+		Throws error if zero or multiple values were provided for `option`.
+	**/
+	public extern inline function getSingleValue(option: CommandOption): String {
+		final values = this.get(option);
+		if (values == null)
+			throw 'Option not found: ${option.toString()}';
+
+		switch values.length {
+			case 0:
+				throw 'No value provided for option: ${option.toString()}';
+			case 1:
+				return values[0];
+			default:
+				throw 'Too many values provided for option: ${option.toString()}';
+		}
 	}
 }
