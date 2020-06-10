@@ -26,6 +26,7 @@ class OptionParseRules {
 	/**
 		Creates a `OptionParseRules` instance.
 		@param rules Should not have elements with duplicate keys (`switchar` and `name`).
+		@param defaultOptionSeparators If not provided, `CommandLineInterface.current.defaultOptionSeparators` is used.
 	**/
 	public static function from(
 		rules: ReadOnlyArray<OptionParseRule>,
@@ -81,8 +82,6 @@ class OptionParseRules {
 
 	/**
 		Checks if a given combination is accepted.
-
-		If no specific rule was provided, any option accepts `Space` and `Equal` (and `Colon` as well if `switchar == Slash`).
 
 		Returns always `false` if `separator == None` (use `getNonSeparatedParameterOptionNames()` instead).
 	**/
