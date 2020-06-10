@@ -1,6 +1,6 @@
 --class-path src
 --class-path test
---library sinker
+-lib sinker
 --main Main
 --dce full
 --macro nullSafety("greeter", Strict)
