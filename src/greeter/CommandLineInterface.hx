@@ -62,7 +62,7 @@ class CommandLineInterface {
 	@:access(greeter.RawArgument)
 	public function parseArguments(
 		?optionParseRules: OptionParseRules
-	): Array<CommandArgument> {
+	): CommandArgumentList {
 		return Parser.parseArguments(
 			Sys.args().map(s -> new RawArgument(s)),
 			optionParseRules,

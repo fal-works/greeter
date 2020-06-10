@@ -17,9 +17,9 @@ class CommandLine {
 	/**
 		List of command arguments.
 	**/
-	public final arguments: Array<CommandArgument>;
+	public final arguments: CommandArgumentList;
 
-	public function new(name: String, arguments: Array<CommandArgument>) {
+	public function new(name: String, arguments: CommandArgumentList) {
 		this.name = name;
 		this.arguments = arguments;
 	}
