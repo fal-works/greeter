@@ -15,7 +15,7 @@ class OptionParseRules {
 			acceptedSeparators: ReadOnlyArray<OptionSeparator>
 	): OptionParseRule {
 		return {
-			option: { switchar: switchar, name: optionName },
+			option: CommandOption.get(switchar, optionName),
 			separators: acceptedSeparators
 		};
 	};

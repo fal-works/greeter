@@ -109,7 +109,7 @@ class Parser {
 			if (optionParseRules.acceptsSeparator(switchar, optionName, Space)) {
 				if (nextIsParameter()) {
 					parsed.push(OptionParameter(
-						{ switchar: switchar, name: optionName },
+						CommandOption.get(switchar, optionName),
 						Space,
 						next()
 					));
@@ -118,7 +118,7 @@ class Parser {
 			}
 
 			// Now this argument must be just a single option without parameter
-			parsed.push(OptionUnit({ switchar: switchar, name: optionName }));
+			parsed.push(OptionUnit(CommandOption.get(switchar, optionName)));
 		}
 
 		return parsed;
@@ -173,7 +173,7 @@ class Parser {
 
 		final value = optionStr.substr(pos + 1);
 		final arg: CommandArgument = OptionParameter(
-			{ switchar: switchar, name: name },
+			CommandOption.get(switchar, name),
 			separator,
 			value
 		);
