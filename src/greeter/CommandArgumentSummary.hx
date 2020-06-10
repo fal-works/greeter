@@ -6,7 +6,7 @@ package greeter;
 	- If there are multiple argument values for an option, they are listed in a single array.
 **/
 @:structInit
-class CommandArgumentsSummary {
+class CommandArgumentSummary {
 	/**
 		Creates a summary from `commandArguments`.
 		@param optionAliasMap Mapping from alias options to representative options.
@@ -14,7 +14,7 @@ class CommandArgumentsSummary {
 	public static function from(
 		commandArguments: CommandArgumentList,
 		?optionAliasMap: Map<CommandOption, CommandOption>
-	): CommandArgumentsSummary {
+	): CommandArgumentSummary {
 		final optionAliasMap = if (optionAliasMap != null) optionAliasMap else new Map();
 
 		inline function getRepresentativeOption(option: CommandOption) {

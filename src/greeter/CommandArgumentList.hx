@@ -15,7 +15,7 @@ abstract CommandArgumentList(Data) from Data to Data {
 	**/
 	public function summary(
 		?optionAliasMap: Map<CommandOption, CommandOption>
-	): CommandArgumentsSummary {
-		return CommandArgumentsSummary.from(this, optionAliasMap);
+	): CommandArgumentSummary {
+		return CommandArgumentSummary.from(this, optionAliasMap);
 	}
 }
