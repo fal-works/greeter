@@ -2,23 +2,21 @@ class Main {
 	static function main() {
 		Sys.println('Passed: ${Sys.args()}\n');
 
-		final rule = OptionParseRules.createRule;
-
 		#if eval
 		final inputRules = OptionParseRules.from([
-			rule(DoubleHyphen, "cwd", [Space]),
-			rule(DoubleHyphen, "class-path", [Space]),
-			rule(DoubleHyphen, "library", [Space]),
-			rule(DoubleHyphen, "main", [Space]),
-			rule(DoubleHyphen, "dce", [Space]),
-			rule(DoubleHyphen, "macro", [Space]),
-			rule(DoubleHyphen, "debug", []),
-			rule(DoubleHyphen, "interp", [])
+			"--cwd" => [Space],
+			"--class-path" => [Space],
+			"--library" => [Space],
+			"--main" => [Space],
+			"--dce" => [Space],
+			"--macro" => [Space],
+			"--debug" => [],
+			"--interp" => []
 		]);
 		#else
 		final inputRules = OptionParseRules.from([
-			rule(DoubleHyphen, "dummyOption", [Space]),
-			rule(DoubleHyphen, "dummyFlat", [])
+			"--dummyOption" =>  [Space],
+			"--dummyFlat" =>  []
 		]);
 		#end
 

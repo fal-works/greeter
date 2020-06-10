@@ -5,7 +5,10 @@ package greeter;
 	Each instance is unique for its contents.
 **/
 @:notNull @:forward
-abstract CommandOption(Data) {
+abstract CommandOption(Data) to Data {
+	static inline final hyphenCode = "-".code;
+	static inline final slashCode = "/".code;
+
 	/**
 		Stores a set of unique `CommandOption` instances.
 	**/
@@ -14,17 +17,59 @@ abstract CommandOption(Data) {
 	/**
 		Returns (or creates if it not exists) an unique instance of `CommandOption`.
 	**/
-	public static inline function get(
-		switchar: Switchar,
-		name: String
-	): CommandOption {
+	public static function get(switchar: Switchar, name: String): CommandOption {
 		final key = switchar + name;
 		final instance = Maybe.from(instanceMap.get(key));
+
 		return if (instance.isSome()) instance.unwrap() else {
 			final newInstance = new CommandOption({ switchar: switchar, name: name });
 			instanceMap.set(key, newInstance);
 			newInstance;
 		}
+	}
+
+	/**
+		Returns an unique instance of `CommandOption`.
+		If not yet created, parses `s` and creates a new instance.
+	**/
+	@:from public static function fromString(s: String): CommandOption {
+		final instance = Maybe.from(instanceMap.get(s));
+
+		return if (instance.isSome()) instance.unwrap() else {
+			final maybeSwitchar = tryExtractSwitchar(s);
+			if (maybeSwitchar.isNone())
+				throw 'Failed to create a command option instance. The given string does not start with switchar: $s';
+
+			final switchar = maybeSwitchar.unwrap();
+			final name = s.substr(switchar.length);
+			final newInstance = new CommandOption({ switchar: switchar, name: name });
+			instanceMap.set(s, newInstance);
+			newInstance;
+		}
+	}
+
+	/**
+		Tries to extract switchar character(s) from `s`.
+		@return `Maybe.none()` if `s` does not start with any switchar.
+	**/
+	public static function tryExtractSwitchar(s: String): Maybe<Switchar> {
+		if (s.length == 0) return Maybe.none();
+		final firstCode = s.charCodeAt(0);
+
+		if (firstCode != hyphenCode) {
+			if (firstCode == slashCode)
+				return Switchar.Slash;
+			else
+				return Maybe.none();
+		}
+
+		if (s.length == 1)
+			return Switchar.Hyphen;
+
+		if (s.charCodeAt(1) != hyphenCode)
+			return Switchar.Hyphen;
+
+		return Switchar.DoubleHyphen;
 	}
 
 	@:op(A == B) public extern inline function equals(other: CommandOption): Bool

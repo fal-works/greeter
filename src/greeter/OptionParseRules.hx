@@ -7,46 +7,27 @@ import haxe.ds.ReadOnlyArray;
 **/
 class OptionParseRules {
 	/**
-		Function for creating an `OptionParseRule` instance.
-	**/
-	public static final createRule = function(
-			switchar: Switchar,
-			optionName: String,
-			acceptedSeparators: ReadOnlyArray<OptionSeparator>
-	): OptionParseRule {
-		return {
-			option: CommandOption.get(switchar, optionName),
-			separators: acceptedSeparators
-		};
-	};
-
-	static final emptyStringList: Array<String> = [];
-
-	/**
-		Creates a `OptionParseRules` instance.
-		@param rules Should not have elements with duplicate keys (`switchar` and `name`).
+		Creates an `OptionParseRules` instance.
+		@param acceptedSeparatorsMap Mapping from each option to a list of accepted separators.
+		If an option has no parameter, it should have an empty separator list.
 		@param defaultOptionSeparators If not provided, `CommandLineInterface.current.defaultOptionSeparators` is used.
 	**/
 	public static function from(
-		rules: ReadOnlyArray<OptionParseRule>,
+		acceptedSeparatorsMap: Map<CommandOption, ReadOnlyArray<OptionSeparator>>,
 		?defaultOptionSeparators: ReadOnlyArray<OptionSeparator>
 	): OptionParseRules {
-		final ruleSet = new Map<String, Bool>();
 		final nonSeparatedParameterOptions: Array<CommandOption> = [];
+		final ruleRecords: Array<OptionParseRule> = [];
 
-		for (rule in rules) {
-			final option = rule.option;
-			final key = option.toString();
-			if (ruleSet.exists(key)) throw 'Duplicate option parsing rule: $key';
-			ruleSet.set(key, true);
-
-			if (rule.separators.indexOf(None) != -1)
+		for (option => acceptedSeparators in acceptedSeparatorsMap) {
+			ruleRecords.push({ option: option, separators: acceptedSeparators });
+			if (acceptedSeparators.indexOf(None) != -1)
 				nonSeparatedParameterOptions.push(option);
 		}
 
 		final cli = CommandLineInterface.current;
 		return new OptionParseRules(
-			rules,
+			ruleRecords.std(),
 			nonSeparatedParameterOptions.std(),
 			Nulls.coalesce(defaultOptionSeparators, cli.defaultOptionSeparators)
 		);
