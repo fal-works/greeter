@@ -43,9 +43,7 @@ class OptionParseRules {
 			if (ruleSet.exists(key)) throw 'Duplicate option parsing rule: $key';
 			ruleSet.set(key, true);
 
-			final separators = rule.separators.copy();
-			rule.separators = separators;
-			if (separators.remove(None)) {
+			if (rule.separators.indexOf(None) != -1) {
 				final nspOptionNames = nspOptionNamesMap.get(switchar);
 				if (nspOptionNames == null) {
 					nspOptionNamesMap.set(switchar, [optionName]);
@@ -82,8 +80,6 @@ class OptionParseRules {
 
 	/**
 		Checks if a given combination is accepted.
-
-		Returns always `false` if `separator == None` (use `getNonSeparatedParameterOptionNames()` instead).
 	**/
 	public function acceptsSeparator(
 		switchar: Switchar,
