@@ -114,15 +114,17 @@ class CommandArgumentSummary {
 	Mapping from each option to a list of values provided for the option.
 **/
 @:forward
-abstract CommandOptionValuesMap(Map<CommandOption, Array<String>>) to Map<CommandOption, Array<String>> {
+abstract CommandOptionValuesMap(
+	Map<CommandOption, Array<String>>
+) to Map<CommandOption, Array<String>> {
 	public extern inline function new()
 		this = new Map();
 
 	/**
 		Returns the first value for `option`.
-		Throws error if zero or multiple values were provided for `option`.
+		Throws error if `option` is not found, or if zero or multiple values were provided for `option`.
 	**/
-	public extern inline function getSingleValue(option: CommandOption): String {
+	public extern inline function getSingle(option: CommandOption): String {
 		final values = this.get(option);
 		if (values == null)
 			throw 'Option not found: ${option.toString()}';
@@ -136,4 +138,11 @@ abstract CommandOptionValuesMap(Map<CommandOption, Array<String>>) to Map<Comman
 				throw 'Too many values provided for option: ${option.toString()}';
 		}
 	}
+
+	/**
+		@return Values provided for `option` in `Maybe` representation.
+		`Maybe.none()` if `option` is not found.
+	**/
+	public extern inline function tryGet(option: CommandOption): Maybe<Array<String>>
+		return Maybe.from(this.get(option));
 }
