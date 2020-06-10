@@ -1,11 +1,5 @@
 class Main {
 	static function main() {
-		#if greeter_unix
-		Sys.println("Current CLI: Unix\n");
-		#elseif greeter_dos
-		Sys.println("Current CLI: DOS\n");
-		#end
-
 		Sys.println('Passed: ${Sys.args()}\n');
 
 		final rule = OptionParseRules.createRule;
