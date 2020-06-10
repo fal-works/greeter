@@ -108,13 +108,17 @@ class Parser {
 			// Try parsing space-separated parameter e.g. --file myFile
 			if (optionParseRules.acceptsSeparator(switchar, optionName, Space)) {
 				if (nextIsParameter()) {
-					parsed.push(OptionParameter(switchar, optionName, Space, next()));
+					parsed.push(OptionParameter(
+						{ switchar: switchar, name: optionName },
+						Space,
+						next()
+					));
 					continue;
 				}
 			}
 
 			// Now this argument must be just a single option without parameter
-			parsed.push(OptionUnit(switchar, optionName));
+			parsed.push(OptionUnit({ switchar: switchar, name: optionName }));
 		}
 
 		return parsed;
@@ -129,17 +133,17 @@ class Parser {
 		optionStr: String,
 		optionParseRules: OptionParseRules
 	): Maybe<CommandArgument> {
-		final nspOptionNames = optionParseRules.getNonSeparatedParameterOptionNames(switchar);
+		final nspOptions = optionParseRules.getNonSeparatedParameterOptions(switchar);
 		final optionStrLen = optionStr.length;
 
-		for (name in nspOptionNames) {
+		for (option in nspOptions) {
+			final name = option.name;
 			final nameLen = name.length;
 			if (optionStrLen <= nameLen) continue;
 			if (!optionStr.startsWith(name)) continue;
 
 			final arg: CommandArgument = OptionParameter(
-				switchar,
-				name,
+				option,
 				None,
 				optionStr.substr(nameLen)
 			);
@@ -163,14 +167,13 @@ class Parser {
 		if (separatorPosition.isNone()) return Maybe.none();
 
 		final pos = separatorPosition.unwrap();
-		final key = optionStr.substr(0, pos);
-		if (!optionParseRules.acceptsSeparator(switchar, key, separator))
+		final name = optionStr.substr(0, pos);
+		if (!optionParseRules.acceptsSeparator(switchar, name, separator))
 			return Maybe.none(); // This option does not accept this separator
 
 		final value = optionStr.substr(pos + 1);
 		final arg: CommandArgument = OptionParameter(
-			switchar,
-			key,
+			{ switchar: switchar, name: name },
 			separator,
 			value
 		);

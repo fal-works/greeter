@@ -15,8 +15,7 @@ class OptionParseRules {
 			acceptedSeparators: ReadOnlyArray<OptionSeparator>
 	): OptionParseRule {
 		return {
-			switchar: switchar,
-			name: optionName,
+			option: { switchar: switchar, name: optionName },
 			separators: acceptedSeparators
 		};
 	};
@@ -32,50 +31,40 @@ class OptionParseRules {
 		rules: ReadOnlyArray<OptionParseRule>,
 		?defaultOptionSeparators: ReadOnlyArray<OptionSeparator>
 	): OptionParseRules {
-		rules = rules.copy();
 		final ruleSet = new Map<String, Bool>();
-		final nspOptionNamesMap = new Map<Switchar, Array<String>>();
+		final nonSeparatedParameterOptions: Array<CommandOption> = [];
 
 		for (rule in rules) {
-			final switchar = rule.switchar;
-			final optionName = rule.name;
-			final key = switchar + optionName;
+			final option = rule.option;
+			final key = option.toString();
 			if (ruleSet.exists(key)) throw 'Duplicate option parsing rule: $key';
 			ruleSet.set(key, true);
 
-			if (rule.separators.indexOf(None) != -1) {
-				final nspOptionNames = nspOptionNamesMap.get(switchar);
-				if (nspOptionNames == null) {
-					nspOptionNamesMap.set(switchar, [optionName]);
-					continue;
-				}
-				nspOptionNames.push(optionName);
-			}
+			if (rule.separators.indexOf(None) != -1)
+				nonSeparatedParameterOptions.push(option);
 		}
 
 		final cli = CommandLineInterface.current;
 		return new OptionParseRules(
 			rules,
-			nspOptionNamesMap,
+			nonSeparatedParameterOptions.std(),
 			Nulls.coalesce(defaultOptionSeparators, cli.defaultOptionSeparators)
 		);
 	}
 
 	final records: ReadOnlyArray<OptionParseRule>;
-	final nonSeparatedParameterOptionNames: Map<Switchar, Array<String>>;
+	final nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>;
 	final defaultOptionSeparators: ReadOnlyArray<OptionSeparator>;
 
 	/**
 		@return List of option names that accepts a parameter without a separator character
 		(e.g. `-Dval` -> `{ name: "D", value: "val" }`).
 	**/
-	public function getNonSeparatedParameterOptionNames(
+	public function getNonSeparatedParameterOptions(
 		switchar: Switchar
-	): Array<String> {
-		return Nulls.coalesce(
-			this.nonSeparatedParameterOptionNames.get(switchar),
-			emptyStringList
-		);
+	): Array<CommandOption> {
+		// TODO: refactor
+		return this.nonSeparatedParameterOptions.filter(opt -> opt.switchar == switchar);
 	}
 
 	/**
@@ -101,7 +90,8 @@ class OptionParseRules {
 	): ReadOnlyArray<OptionSeparator> {
 		var found = this.defaultOptionSeparators;
 		for (rule in this.records) {
-			if (rule.switchar == switchar && rule.name == optionName) {
+			final option = rule.option;
+			if (option.switchar == switchar && option.name == optionName) {
 				found = rule.separators;
 				break;
 			}
@@ -111,11 +101,11 @@ class OptionParseRules {
 
 	function new(
 		records: ReadOnlyArray<OptionParseRule>,
-		nonSeparatedParameterOptionNames: Map<Switchar, Array<String>>,
+		nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>,
 		defaultOptionSeparators: ReadOnlyArray<OptionSeparator>
 	) {
 		this.records = records;
-		this.nonSeparatedParameterOptionNames = nonSeparatedParameterOptionNames;
+		this.nonSeparatedParameterOptions = nonSeparatedParameterOptions;
 		this.defaultOptionSeparators = defaultOptionSeparators;
 	}
 }

@@ -3,12 +3,14 @@ package greeter;
 import haxe.ds.ReadOnlyArray;
 
 /**
-	Rule for parsing an option with a specific switchar and name.
-	`switchar` and `name` are used as a composite primary key.
+	Rule for parsing an option.
 **/
 typedef OptionParseRule = {
-	switchar: Switchar,
-	name: String,
+	/**
+		`CommandOption` to which this rule applies.
+		Used as a key for searching in `OptionParseRules`.
+	**/
+	option: CommandOption,
 
 	/**
 		List of accepted separator characters for this option type.

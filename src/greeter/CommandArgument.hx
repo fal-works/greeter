@@ -6,10 +6,9 @@ package greeter;
 @:using(greeter.CommandArgument.CommandArgumentExtension)
 enum CommandArgument {
 	Parameter(value: String);
-	OptionUnit(switchar: Switchar, name: String);
+	OptionUnit(option: CommandOption);
 	OptionParameter(
-		switchar: Switchar,
-		name: String,
+		option: CommandOption,
 		separator: OptionSeparator,
 		value: String
 	);
@@ -22,28 +21,30 @@ class CommandArgumentExtension {
 	public static function toString(arg: CommandArgument): String {
 		return switch arg {
 			case Parameter(value): value;
-			case OptionUnit(switchar, name): '$switchar$name';
-			case OptionParameter(switchar, name, separator, value):
-				'$switchar$name$separator$value';
+			case OptionUnit(option): option.toString();
+			case OptionParameter(option, separator, value):
+				'${option.toString()}$separator$value';
 		}
 	}
 
 	/**
 		@return `String` that can be used in `cli`.
 	**/
-	public static function quote(
-		arg: CommandArgument,
-		cli: CommandLineInterface
-	): String {
+	public static function quote(arg: CommandArgument, cli: CommandLineInterface): String {
 		return switch arg {
 			case Parameter(value): cli.quoteArgument(value);
-			case OptionUnit(switchar, name):
+			case OptionUnit(option):
+				final switchar = option.switchar;
 				validateSwitchar(cli, switchar);
-				'$switchar${cli.quoteArgument(name)}';
-			case OptionParameter(switchar, name, separator, value):
+				cli.quoteArgument(switchar + option.name);
+			case OptionParameter(option, separator, value):
+				final switchar = option.switchar;
 				validateSwitchar(cli, switchar);
 				validateOptionSeparator(cli, separator);
-				'$switchar${cli.quoteArgument(name)}$separator${cli.quoteArgument(value)}';
+				switch separator {
+					case Space: '${cli.quoteArgument(switchar + option.name)}$separator${cli.quoteArgument(value)}';
+					default: cli.quoteArgument('$switchar${option.name}$separator$value');
+				}
 		}
 	}
 
