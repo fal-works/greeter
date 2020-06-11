@@ -25,6 +25,6 @@ class Main {
 
 		Sys.println("\n[summary]");
 
-		Sys.println(args.summary(["-lib" => "--library"]));
+		Sys.println(args.summary(["-lib" => "--library"]).toString());
 	}
 }
