@@ -1,11 +1,11 @@
-package greeter;
+package greeter.implementation;
 
 /**
 	Set of `Cli` instances.
 **/
-class Clis {
-	public static final unix = @:privateAccess new Cli.UnixCli();
-	public static final dos = @:privateAccess new Cli.DosCli();
+class CliInstances {
+	public static final unix = @:privateAccess new UnixCli();
+	public static final dos = @:privateAccess new DosCli();
 
 	/**
 		The CLI system of the current environment in which this program is running.

@@ -1,7 +1,7 @@
 package greeter;
 
-import haxe.SysTools;
 import haxe.ds.ReadOnlyArray;
+import greeter.implementation.CliInstances;
 
 /**
 	Object representing a CLI that abstracts system-specific behavior.
@@ -12,8 +12,24 @@ class Cli {
 	**/
 	public static var current(get, never): Cli;
 
+	/**
+		Unix CLI.
+	**/
+	public static var unix(get, never): Cli;
+
+	/**
+		DOS CLI.
+	**/
+	public static var dos(get, never): Cli;
+
 	static extern inline function get_current()
-		return Clis.current;
+		return CliInstances.current;
+
+	static extern inline function get_unix()
+		return CliInstances.unix;
+
+	static extern inline function get_dos()
+		return CliInstances.dos;
 
 	/**
 		CLI type that can be used for `switch` expressions.
@@ -87,58 +103,4 @@ class Cli {
 	**/
 	public function quoteArgument(s: String): String
 		throw "This method must be overridden by a sub-class.";
-}
-
-class UnixCli extends Cli {
-	function new() {
-		final separators: ReadOnlyArray<OptionSeparator> = [Equal];
-		super(Unix, "Unix", "\\", separators, separators);
-	}
-
-	override public inline function acceptsSwitchar(switchar: Switchar): Bool
-		return switch switchar {
-			case Hyphen: true;
-			case DoubleHyphen: true;
-			case Slash: false;
-		};
-
-	override public inline function acceptsOptionSeparator(
-		separator: OptionSeparator
-	): Bool
-		return switch separator {
-			case None: true;
-			case Space: true;
-			case Equal: true;
-			case Colon: false;
-		}
-
-	override public inline function quoteArgument(s: String): String
-		return SysTools.quoteUnixArg(s);
-}
-
-class DosCli extends Cli {
-	function new() {
-		final separators: ReadOnlyArray<OptionSeparator> = [Equal, Colon];
-		super(Dos, "Dos", "^", separators, separators);
-	}
-
-	override public inline function acceptsSwitchar(switchar: Switchar): Bool
-		return switch switchar {
-			case Hyphen: true;
-			case DoubleHyphen: true;
-			case Slash: true;
-		};
-
-	override public inline function acceptsOptionSeparator(
-		separator: OptionSeparator
-	): Bool
-		return switch separator {
-			case None: true;
-			case Space: true;
-			case Equal: true;
-			case Colon: true;
-		}
-
-	override public inline function quoteArgument(s: String): String
-		return SysTools.quoteWinArg(s, true);
 }
