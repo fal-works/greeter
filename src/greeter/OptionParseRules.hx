@@ -12,10 +12,15 @@ class OptionParseRules {
 		If an option has no parameter, it should have an empty separator list.
 		@param defaultAcceptedSeparators Separators accepted by any option not registered in `acceptedSeparatorsMap`.
 		If not provided, `Cli.current.defaultAcceptedSeparators` is used.
+		@param strict Defaults to `false`.
+		If `true`, treats any unknown option (an option-like argument that can be
+		parsed as an option but is not contained in `optionParseRules`) as a command line
+		parameter value (i.e. `CommandArgument.Parameter(value: String)`).
 	**/
 	public static function from(
 		acceptedSeparatorsMap: Map<CommandOption, ReadOnlyArray<OptionSeparator>>,
-		?defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>
+		?defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>,
+		strict = false
 	): OptionParseRules {
 		final nonSeparatedParameterOptions: Array<CommandOption> = [];
 		final optionRecords: Array<OptionParseRuleRecord> = [];
@@ -34,9 +39,18 @@ class OptionParseRules {
 		return new OptionParseRules(
 			optionRecords.std(),
 			nonSeparatedParameterOptions.std(),
-			Nulls.coalesce(defaultAcceptedSeparators, cli.defaultAcceptedOptionSeparators)
+			Nulls.coalesce(
+				defaultAcceptedSeparators,
+				cli.defaultAcceptedOptionSeparators
+			),
+			strict
 		);
 	}
+
+	/**
+		See `OptionParseRules.from()`.
+	**/
+	public final strict: Bool;
 
 	final records: ReadOnlyArray<OptionParseRuleRecord>;
 	final nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>;
@@ -45,10 +59,7 @@ class OptionParseRules {
 	/**
 		Returns a list of accepted separators for a given option.
 	**/
-	public function containOption(
-		switchar: Switchar,
-		name: String
-	): Bool {
+	public function containOption(switchar: Switchar, name: String): Bool {
 		for (rule in this.records) {
 			if (rule.switchar == switchar && rule.name == name)
 				return true;
@@ -101,11 +112,13 @@ class OptionParseRules {
 	function new(
 		records: ReadOnlyArray<OptionParseRuleRecord>,
 		nonSeparatedParameterOptions: ReadOnlyArray<CommandOption>,
-		defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>
+		defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>,
+		strict: Bool
 	) {
 		this.records = records;
 		this.nonSeparatedParameterOptions = nonSeparatedParameterOptions;
 		this.defaultAcceptedSeparators = defaultAcceptedSeparators;
+		this.strict = strict;
 	}
 }
 
