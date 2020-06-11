@@ -84,7 +84,7 @@ abstract CommandOption(Data) to Data {
 	/**
 		@return `String` that can be used as a single command line argument in `cli`.
 	**/
-	public extern inline function quote(cli: CommandLineInterface): String
+	public extern inline function quote(cli: Cli): String
 		return cli.quoteArgument(toString());
 
 	extern inline function new(data: Data)

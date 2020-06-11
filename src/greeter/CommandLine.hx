@@ -44,7 +44,7 @@ class CommandLine {
 	/**
 		@return `this` as a one-line string that can be used in `cli`.
 	**/
-	public function quote(cli: CommandLineInterface): String {
+	public function quote(cli: Cli): String {
 		final arguments = this.arguments.map(arg -> arg.quote(cli));
 		return '${cli.quoteArgument(this.name)} ${arguments.join(" ")}';
 	}
@@ -52,7 +52,7 @@ class CommandLine {
 	/**
 		@return `this` as a multi-line string that can be used in a script for `cli`.
 	**/
-	public function format(cli: CommandLineInterface): String {
+	public function format(cli: Cli): String {
 		final name = this.name;
 		final arguments = this.arguments;
 

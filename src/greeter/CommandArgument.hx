@@ -30,7 +30,7 @@ class CommandArgumentExtension {
 	/**
 		@return `String` that can be used in `cli`.
 	**/
-	public static function quote(arg: CommandArgument, cli: CommandLineInterface): String {
+	public static function quote(arg: CommandArgument, cli: Cli): String {
 		return switch arg {
 			case Parameter(value): cli.quoteArgument(value);
 			case OptionUnit(option):
@@ -48,15 +48,12 @@ class CommandArgumentExtension {
 		}
 	}
 
-	static extern inline function validateSwitchar(
-		cli: CommandLineInterface,
-		switchar: Switchar
-	): Void
+	static extern inline function validateSwitchar(cli: Cli, switchar: Switchar): Void
 		if (!cli.acceptsSwitchar(switchar))
 			throw 'Invalid argument. ${cli.name} does not accept switchar: \"$switchar\"';
 
 	static extern inline function validateOptionSeparator(
-		cli: CommandLineInterface,
+		cli: Cli,
 		separator: OptionSeparator
 	): Void
 		if (!cli.acceptsOptionSeparator(separator))

@@ -11,7 +11,7 @@ class Parser {
 	public static function parseCommandLine(
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
-		?cli: CommandLineInterface
+		?cli: Cli
 	): CommandLine {
 		final arguments = parseArguments(args, optionParseRules, cli);
 		final firstArgument = arguments.shift();
@@ -31,11 +31,11 @@ class Parser {
 	public static function parseArguments(
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
-		?cli: CommandLineInterface
+		?cli: Cli
 	): CommandArgumentList {
 		final optionParseRules = if (optionParseRules != null) optionParseRules else
 			OptionParseRules.from([]);
-		final cli = if (cli != null) cli else CommandLineInterface.current;
+		final cli = if (cli != null) cli else Cli.current;
 
 		var index = 0;
 		final length = args.length;

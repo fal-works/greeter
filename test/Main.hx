@@ -18,7 +18,7 @@ class Main {
 		final inputRules = OptionParseRules.from(["--dummyOption" => [Space], "--dummyFlat" => []]);
 		#end
 
-		final cli = CommandLineInterface.current;
+		final cli = Cli.current;
 		final args = cli.parseArguments(inputRules);
 
 		for (arg in args) Sys.println(arg.toString());

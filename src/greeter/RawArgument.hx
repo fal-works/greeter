@@ -11,7 +11,7 @@ abstract RawArgument(String) to String {
 	/**
 		Determines the type of `this` argument.
 	**/
-	public function getType(cli: CommandLineInterface): RawArgumentType {
+	public function getType(cli: Cli): RawArgumentType {
 		final maybeRawOption = tryGetRawOption();
 		if (maybeRawOption.isNone())
 			return Parameter(this);
@@ -30,7 +30,7 @@ abstract RawArgument(String) to String {
 	/**
 		@return `true` if `this` starts with any switchar character.
 	**/
-	public function isOption(cli: CommandLineInterface): Bool {
+	public function isOption(cli: Cli): Bool {
 		if (this.length == 0) return false;
 		final firstCode = this.charCodeAt(0);
 		return firstCode == hyphenCode
@@ -40,7 +40,7 @@ abstract RawArgument(String) to String {
 	/**
 		@return `true` if `this` does not start with any switchar character.
 	**/
-	public inline function isNotOption(cli: CommandLineInterface): Bool
+	public inline function isNotOption(cli: Cli): Bool
 		return !isOption(cli);
 
 	/**

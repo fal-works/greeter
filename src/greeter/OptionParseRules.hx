@@ -11,7 +11,7 @@ class OptionParseRules {
 		@param acceptedSeparatorsMap Mapping from each option to a list of accepted separators.
 		If an option has no parameter, it should have an empty separator list.
 		@param defaultAcceptedSeparators Separators accepted by any option not registered in `acceptedSeparatorsMap`.
-		If not provided, `CommandLineInterface.current.defaultAcceptedSeparators` is used.
+		If not provided, `Cli.current.defaultAcceptedSeparators` is used.
 	**/
 	public static function from(
 		acceptedSeparatorsMap: Map<CommandOption, ReadOnlyArray<OptionSeparator>>,
@@ -30,7 +30,7 @@ class OptionParseRules {
 				nonSeparatedParameterOptions.push(option);
 		}
 
-		final cli = CommandLineInterface.current;
+		final cli = Cli.current;
 		return new OptionParseRules(
 			optionRecords.std(),
 			nonSeparatedParameterOptions.std(),

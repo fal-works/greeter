@@ -6,19 +6,19 @@ import haxe.ds.ReadOnlyArray;
 /**
 	Object representing a CLI that abstracts system-specific behavior.
 **/
-class CommandLineInterface {
+class Cli {
 	/**
 		CLI of the current system.
 	**/
-	public static var current(get, never): CommandLineInterface;
+	public static var current(get, never): Cli;
 
 	static extern inline function get_current()
-		return CommandLineInterfaceSet.current;
+		return Clis.current;
 
 	/**
 		CLI type that can be used for `switch` expressions.
 	**/
-	public final type: CommandLineInterfaceType;
+	public final type: CliType;
 
 	/**
 		The name of `this` CLI.
@@ -42,7 +42,7 @@ class CommandLineInterface {
 	public final keyValueOptionSeparators: ReadOnlyArray<OptionSeparator>;
 
 	function new(
-		type: CommandLineInterfaceType,
+		type: CliType,
 		name: String,
 		lineDivider: String,
 		defaultAcceptedOptionSeparators: ReadOnlyArray<OptionSeparator>,
@@ -89,7 +89,7 @@ class CommandLineInterface {
 		throw "This method must be overridden by a sub-class.";
 }
 
-class UnixCli extends CommandLineInterface {
+class UnixCli extends Cli {
 	function new() {
 		final separators: ReadOnlyArray<OptionSeparator> = [Equal];
 		super(Unix, "Unix", "\\", separators, separators);
@@ -116,7 +116,7 @@ class UnixCli extends CommandLineInterface {
 		return SysTools.quoteUnixArg(s);
 }
 
-class DosCli extends CommandLineInterface {
+class DosCli extends Cli {
 	function new() {
 		final separators: ReadOnlyArray<OptionSeparator> = [Equal, Colon];
 		super(Dos, "Dos", "^", separators, separators);
