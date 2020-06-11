@@ -30,7 +30,7 @@ class CommandLine {
 		@return The exit code.
 	**/
 	public function run(print: Bool = false): Int {
-		final cmdString = this.toString();
+		final cmdString = this.quote(Cli.current);
 		if (print) Sys.println(cmdString);
 		return Sys.command(cmdString);
 	}

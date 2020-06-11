@@ -7,13 +7,15 @@ class Parser {
 		Parses raw argument strings and converts them to a `CommandLine` instance.
 		Sub-command names are parsed as `CommandArgument.Parameter` as well as other parameter values.
 		@param args The first element must be a command name.
+		@param strict See `Cli.parseArguments()`.
 	**/
 	public static function parseCommandLine(
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
+		strict = false,
 		?cli: Cli
 	): CommandLine {
-		final arguments = parseArguments(args, optionParseRules, cli);
+		final arguments = parseArguments(args, optionParseRules, strict, cli);
 		final firstArgument = arguments.shift();
 		if (firstArgument.isNone()) throw 'Passed no arguments.';
 
@@ -27,14 +29,16 @@ class Parser {
 
 	/**
 		Parses raw argument strings and converts them to a list of `CommandArgument`.
+		@param strict See `Cli.parseArguments()`.
 	**/
 	public static function parseArguments(
 		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules,
+		strict = false,
 		?cli: Cli
 	): CommandArgumentList {
-		final optionParseRules = if (optionParseRules != null) optionParseRules else
-			OptionParseRules.from([]);
+		final optionParseRules: OptionParseRules = if (optionParseRules != null)
+			optionParseRules else OptionParseRules.from([]);
 		final cli = if (cli != null) cli else Cli.current;
 
 		var index = 0;
@@ -49,6 +53,19 @@ class Parser {
 
 		inline function nextIsParameter()
 			return hasNext() && args[index].isNotOption(cli);
+
+		final processUnknownOption = switch strict {
+			case true:
+				function(arg: RawArgument, switchar: Switchar, name: String): Bool {
+					if (!optionParseRules.containOption(switchar, name)) {
+						parsed.push(Parameter(arg));
+						return true;
+					}
+					return false;
+				};
+			case false:
+				(_, _, _) -> false;
+		};
 
 		while (hasNext()) {
 			final arg = next();
@@ -104,6 +121,9 @@ class Parser {
 
 			// Now this string must be just an option name and doesn't contain any parameter value
 			final optionName = optionStr;
+
+			// If strict and if option is unknown, push it just as a string value
+			if (processUnknownOption(arg, switchar, optionName)) continue;
 
 			// Try parsing space-separated parameter e.g. --file myFile
 			if (optionParseRules.acceptsSeparator(switchar, optionName, Space)) {

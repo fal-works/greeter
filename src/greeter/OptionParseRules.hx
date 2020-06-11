@@ -43,6 +43,20 @@ class OptionParseRules {
 	final defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>;
 
 	/**
+		Returns a list of accepted separators for a given option.
+	**/
+	public function containOption(
+		switchar: Switchar,
+		name: String
+	): Bool {
+		for (rule in this.records) {
+			if (rule.switchar == switchar && rule.name == name)
+				return true;
+		}
+		return false;
+	}
+
+	/**
 		@return List of option names that accepts a parameter without a separator character
 		(e.g. `-Dval` -> `{ name: "D", value: "val" }`).
 	**/
