@@ -72,6 +72,23 @@ class Cli {
 	}
 
 	/**
+		Parses raw argument strings and converts them to a `CommandLine` instance.
+		Sub-command names are parsed as `CommandArgument.Parameter` as well as other parameter values.
+		@param args The first element must be a command name.
+	**/
+	@:access(greeter.RawArgument)
+	public function parseCommandLine(
+		args: Array<String>,
+		?optionParseRules: OptionParseRules
+	): CommandLine {
+		return Parser.parseCommandLine(
+			args.map(s -> new RawArgument(s)),
+			optionParseRules,
+			this
+		);
+	}
+
+	/**
 		Parses all argument strings that were passed (via `Sys.args()`).
 		@return Arguments as a list of `CommandArgument`.
 	**/
