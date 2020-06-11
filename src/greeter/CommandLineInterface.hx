@@ -34,7 +34,7 @@ class CommandLineInterface {
 		A default list of separators that are accepted by an option
 		if no other rule is provided to an `OptionParseRules` instance.
 	**/
-	public final defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>;
+	public final defaultAcceptedOptionSeparators: ReadOnlyArray<OptionSeparator>;
 
 	/**
 		List of separators that can be used for parsing key-value options on `this` CLI.
@@ -45,13 +45,13 @@ class CommandLineInterface {
 		type: CommandLineInterfaceType,
 		name: String,
 		lineDivider: String,
-		defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>,
+		defaultAcceptedOptionSeparators: ReadOnlyArray<OptionSeparator>,
 		keyValueOptionSeparators: ReadOnlyArray<OptionSeparator>
 	) {
 		this.type = type;
 		this.name = name;
 		this.lineDivider = lineDivider;
-		this.defaultAcceptedSeparators = defaultAcceptedSeparators;
+		this.defaultAcceptedOptionSeparators = defaultAcceptedOptionSeparators;
 		this.keyValueOptionSeparators = keyValueOptionSeparators;
 	}
 

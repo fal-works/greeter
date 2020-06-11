@@ -34,7 +34,7 @@ class OptionParseRules {
 		return new OptionParseRules(
 			optionRecords.std(),
 			nonSeparatedParameterOptions.std(),
-			Nulls.coalesce(defaultAcceptedSeparators, cli.defaultAcceptedSeparators)
+			Nulls.coalesce(defaultAcceptedSeparators, cli.defaultAcceptedOptionSeparators)
 		);
 	}
 
