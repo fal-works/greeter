@@ -1,6 +1,6 @@
 # greeter
 
-Parse/build command lines, abstracting from system-specific behavior of Unix and DOS.
+Parse/build command lines. Supports both Unix and DOS (maybe).
 
 ## Dependencies
 
