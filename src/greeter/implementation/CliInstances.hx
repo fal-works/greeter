@@ -11,7 +11,7 @@ class CliInstances {
 		The CLI system of the current environment in which this program is running.
 	**/
 	public static final current = switch Sys.systemName() {
-		case "Windows": dos;
-		default: unix;
-	}
+			case "Windows": dos;
+			default: unix;
+		}
 }
