@@ -57,6 +57,15 @@ class OptionParseRules {
 	final defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>;
 
 	/**
+		@return List of all options contained in `this`.
+	**/
+	public function getAllOptions(): Array<CommandOption> {
+		final options: Array<CommandOption> = [];
+		for (rule in this.records) options.push(CommandOption.get(rule.switchar, rule.name));
+		return options;
+	}
+
+	/**
 		Returns a list of accepted separators for a given option.
 	**/
 	public function containOption(switchar: Switchar, name: String): Bool {
