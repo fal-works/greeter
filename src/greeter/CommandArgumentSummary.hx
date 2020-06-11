@@ -72,10 +72,10 @@ class CommandArgumentSummary {
 	public extern inline function oneCommandValue(): String {
 		final values = this.commandValues;
 		switch values.length {
-			case 0:
+			case UInt.zero:
 				throw 'Passed no command value.';
-			case 1:
-				return values[0];
+			case UInt.one:
+				return values.getFirst();
 			default:
 				throw 'Passed too many command values.';
 		}
@@ -87,14 +87,14 @@ class CommandArgumentSummary {
 	public function toString(): String {
 		var s = 'command values: \n';
 		final values = this.commandValues;
-		if (values.length == 0) s += "  (none)\n";
+		if (values.isEmpty()) s += "  (none)\n";
 		else for (value in values) s += '  $value\n';
 
 		s += 'options: \n';
 		for (option => values in this.optionValuesMap) {
 			final valuesStr = switch values.length {
-				case 0: "";
-				case 1: ' ${values[0]}';
+				case UInt.zero: "";
+				case UInt.one: ' ${values.getFirst()}';
 				default: ' ${values.toString()}';
 			}
 			s += '  ${option.toString()}$valuesStr\n';
@@ -135,10 +135,10 @@ abstract CommandOptionValuesMap(
 			return Maybe.none();
 
 		switch values.length {
-			case 0:
+			case UInt.zero:
 				throw 'No value provided for option: ${option.toString()}';
-			case 1:
-				return values[0];
+			case UInt.one:
+				return values.getFirst();
 			default:
 				throw 'Too many values provided for option: ${option.toString()}';
 		}
@@ -155,10 +155,10 @@ abstract CommandOptionValuesMap(
 			return Maybe.none();
 
 		switch values.length {
-			case 0:
+			case UInt.zero:
 				return Maybe.from(ZeroOrOne.Zero);
-			case 1:
-				return Maybe.from(ZeroOrOne.One(values[0]));
+			case UInt.one:
+				return Maybe.from(ZeroOrOne.One(values.getFirst()));
 			default:
 				throw 'Too many values provided for option: ${option.toString()}';
 		}
@@ -170,7 +170,7 @@ abstract CommandOptionValuesMap(
 	**/
 	public function oneOrMore(option: CommandOption): Maybe<Array<String>> {
 		final values = this.get(option);
-		if (values != null && values.length == 0)
+		if (values != null && values.isEmpty())
 			throw 'No value provided for option: ${option.toString()}';
 		return Maybe.from(values).or([]);
 	}
