@@ -18,4 +18,16 @@ abstract CommandArgumentList(Data) from Data to Data {
 	): CommandArgumentSummary {
 		return CommandArgumentSummary.from(this, optionAliasMap);
 	}
+
+	/**
+		@return `this` as an array of `String` without quoting or escaping.
+	**/
+	public function toStringArray(): Array<String>
+		return this.map(arg -> arg.toString());
+
+	/**
+		@return `this` as an array of `String` that can be used as command line arguments in `cli`.
+	**/
+	public function toQuotedStringArray(cli: Cli): Array<String>
+		return this.map(arg -> arg.quote(cli));
 }
