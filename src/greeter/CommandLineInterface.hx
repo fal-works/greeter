@@ -18,7 +18,7 @@ class CommandLineInterface {
 	/**
 		CLI type that can be used for `switch` expressions.
 	**/
-	public final type: CliType;
+	public final type: CommandLineInterfaceType;
 
 	/**
 		The name of `this` CLI.
@@ -42,7 +42,7 @@ class CommandLineInterface {
 	public final keyValueOptionSeparators: ReadOnlyArray<OptionSeparator>;
 
 	function new(
-		type: CliType,
+		type: CommandLineInterfaceType,
 		name: String,
 		lineDivider: String,
 		defaultAcceptedSeparators: ReadOnlyArray<OptionSeparator>,
@@ -141,9 +141,4 @@ class DosCli extends CommandLineInterface {
 
 	override public inline function quoteArgument(s: String): String
 		return SysTools.quoteWinArg(s, true);
-}
-
-enum abstract CliType(Int) {
-	final Unix;
-	final Dos;
 }
