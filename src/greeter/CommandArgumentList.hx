@@ -30,4 +30,10 @@ abstract CommandArgumentList(Data) from Data to Data {
 	**/
 	public function toQuotedStringArray(cli: Cli): Array<String>
 		return this.map(arg -> arg.quote(cli));
+
+	/**
+		@return `this` in `String` representation.
+	**/
+	public function toString(): String
+		return toStringArray().toString();
 }
