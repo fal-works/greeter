@@ -19,7 +19,7 @@ class Main {
 		#end
 
 		final cli = Cli.current;
-		final args = cli.parseArguments(inputRules);
+		final args = cli.parsePassedArguments(inputRules);
 
 		for (arg in args) Sys.println(arg.toString());
 

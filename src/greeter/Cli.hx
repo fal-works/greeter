@@ -89,18 +89,28 @@ class Cli {
 	}
 
 	/**
-		Parses all argument strings that were passed (via `Sys.args()`).
-		@return Arguments as a list of `CommandArgument`.
+		Parses all argument strings and converts them to a `CommandArgumentList` instance.
 	**/
 	@:access(greeter.RawArgument)
 	public function parseArguments(
+		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules
 	): CommandArgumentList {
 		return Parser.parseArguments(
-			Sys.args(),
+			args,
 			optionParseRules,
 			this
 		);
+	}
+
+	/**
+		Parses all argument strings that have been passed (via `Sys.args()`)
+		and converts them to a `CommandArgumentList` instance.
+	**/
+	public function parsePassedArguments(
+		?optionParseRules: OptionParseRules
+	): CommandArgumentList {
+		return parseArguments(Sys.args(), optionParseRules);
 	}
 
 	/**
