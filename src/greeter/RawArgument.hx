@@ -1,10 +1,11 @@
 package greeter;
 
 /**
-	Space-separated argument string before parsed.
+	Space-separated command line argument string before parsed (e.g. an element of `Sys.args()`).
+	Can be implicitly cast from `String`.
 **/
-@:forward
-abstract RawArgument(String) to String {
+@:notNull @:forward
+abstract RawArgument(String) from String to String {
 	static inline final hyphenCode = "-".code;
 	static inline final slashCode = "/".code;
 
@@ -56,9 +57,6 @@ abstract RawArgument(String) to String {
 			optionString: this.substr(switchar.length)
 		});
 	}
-
-	inline extern function new(s: String)
-		this = s;
 }
 
 private enum RawArgumentType {

@@ -78,11 +78,11 @@ class Cli {
 	**/
 	@:access(greeter.RawArgument)
 	public function parseCommandLine(
-		args: Array<String>,
+		args: Array<RawArgument>,
 		?optionParseRules: OptionParseRules
 	): CommandLine {
 		return Parser.parseCommandLine(
-			args.map(s -> new RawArgument(s)),
+			args,
 			optionParseRules,
 			this
 		);
@@ -97,7 +97,7 @@ class Cli {
 		?optionParseRules: OptionParseRules
 	): CommandArgumentList {
 		return Parser.parseArguments(
-			Sys.args().map(s -> new RawArgument(s)),
+			Sys.args(),
 			optionParseRules,
 			this
 		);
