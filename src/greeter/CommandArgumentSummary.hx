@@ -82,23 +82,44 @@ class CommandArgumentSummary {
 	}
 
 	/**
-		Formats `this` and returns as `String`.
+		@return Formatted string of `this.commandValues`.
 	**/
-	public function toString(): String {
-		var s = 'command values: \n';
+	public function formatCommandValues(indent = ""): String {
 		final values = this.commandValues;
-		if (values.isEmpty()) s += "  (none)\n";
-		else for (value in values) s += '  $value\n';
+		if (values.isEmpty()) return '$indent(none)';
+		final separator = "\n" + indent;
+		return '$indent${values.join(separator)}';
+	}
 
-		s += 'options: \n';
+	/**
+		@return Formatted string of `this.optionValuesMap`.
+	**/
+	public function formatOptions(indent = ""): String {
+		var s = "";
+
 		for (option => values in this.optionValuesMap) {
 			final valuesStr = switch values.length {
 				case UInt.zero: "";
 				case UInt.one: ' ${values.getFirst()}';
 				default: ' ${values.toString()}';
 			}
-			s += '  ${option.toString()}$valuesStr\n';
+			s += '$indent${option.toString()}$valuesStr\n';
 		}
+
+		return s;
+	}
+
+	/**
+		Formats `this` and returns as `String`.
+	**/
+	public function toString(): String {
+		final indent = "  ";
+
+		var s = 'command values: \n';
+		s += formatCommandValues(indent);
+		s += '\noptions: \n';
+		s += formatOptions(indent);
+
 		return s;
 	}
 
