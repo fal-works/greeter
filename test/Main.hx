@@ -15,7 +15,7 @@ class Main {
 			"--interp" => []
 		]);
 		#else
-		final inputRules = OptionParseRules.from(["--dummyOption" => [Space], "--dummyFlat" => []]);
+		final inputRules = OptionParseRules.from(["--dummyOption" => [Space], "--dummyFlag" => []]);
 		#end
 
 		final cli = Cli.current;
