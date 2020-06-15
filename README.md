@@ -1,6 +1,48 @@
 # greeter
 
-Parse/build command lines. Supports both Unix and DOS (maybe).
+Parse/build command lines. Both Unix and DOS (maybe).
+
+
+## Usage
+
+```haxe
+import greeter.*;
+```
+
+```haxe
+final inputRules = OptionParseRules.from([
+	"--myOption" => [Space], // accepts a space-separated argument
+	"--myFlag" => [] // no argument
+]);
+
+final cli = Cli.current; // Either Unix or DOS
+final args = cli.parsePassedArguments(inputRules); // Parse args passed via Sys.args()
+
+final summary = args.summary();
+Sys.println(summary.toString());
+```
+
+If the arguments below is passed in the command line:
+
+```
+--myOption myOptionValue --myFlag myValue
+```
+
+Then the result is:
+
+```
+command values:
+  myValue
+options:
+  --myOption myOptionValue
+  --myFlag
+```
+
+
+## Caveats
+
+Quite unstable!
+
 
 ## Current limitations
 
@@ -9,6 +51,7 @@ Parse/build command lines. Supports both Unix and DOS (maybe).
 - Cannot parse/build multiple options unified (e.g. `-ab` instead of `-a -b`).
 - Requires space before each option, while some systems do not always require (e.g. `DIR/Q/O`)
 - Maybe more!
+
 
 ## Dependencies
 
