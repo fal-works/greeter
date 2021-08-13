@@ -8,6 +8,8 @@ private typedef Data = Array<CommandArgument>;
 @:forward
 @:using(sinker.extensions.ArrayExtension)
 @:using(sinker.extensions.ArrayFunctionalExtension)
+@:arrayAccess
+@:transitive
 abstract CommandArgumentList(Data) from Data to Data {
 	/**
 		Creates a summary from `this`.
