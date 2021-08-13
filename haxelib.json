@@ -2,7 +2,7 @@
 	"name": "greeter",
 	"url": "https://github.com/fal-works/greeter/",
 	"license": "MIT",
-	"tags": ["utility", "sys"],
+	"tags": ["utility", "sys", "parser"],
 	"description": "Parse/build command lines. Supports both Unix and DOS (maybe).",
 	"version": "0.1.0",
 	"classPath": "src/",
