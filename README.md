@@ -33,8 +33,8 @@ import greeter.*;
 
 ```haxe
 final inputRules = OptionParseRules.from([
-	"--myOption" => [Space], // accepts a space-separated argument
-	"--myFlag" => [] // no argument
+  "--myOption" => [Space], // accepts a space-separated argument
+  "--myFlag" => [] // no argument
 ]);
 
 final cli = Cli.current; // Either Unix or DOS
@@ -46,13 +46,13 @@ Sys.println(summary.toString());
 
 If the arguments below is passed in the command line:
 
-```
+```console
 --myOption myOptionValue --myFlag myValue
 ```
 
 Then the result is:
 
-```
+```console
 command values:
   myValue
 options:
